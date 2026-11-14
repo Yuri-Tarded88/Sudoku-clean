@@ -3,15 +3,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Sudoku</title>
 <style>
-:root{--bg:#0d1017;--panel:#161b26;--cell:#1a2030;--line:#2b3347;--hl:#232c42;--sel:#31415f;--txt:#e6eaf3;--given:#aab3c7;--glow:#7cc4ff;--bad:#ff6b7a;--mute:#6f7a93;--s:min(94vw,520px,max(300px,calc(100dvh - 330px)))}
+:root{--bg:#0d1017;--panel:#161b26;--cell:#1a2030;--line:#2b3347;--hl:#232c42;--sel:#31415f;--txt:#e6eaf3;--given:#aab3c7;--glow:#7cc4ff;--bad:#ff6b7a;--mute:#6f7a93;--s:min(98vw,520px,max(300px,calc(100dvh - 400px)))}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-family:"Segoe UI",system-ui,sans-serif}
-body{display:flex;flex-direction:column;align-items:center;padding:14px 10px 24px}
+body{display:flex;flex-direction:column;align-items:center;padding:10px 4px 20px}
 .top{width:var(--s);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 h1{font-size:22px;font-weight:600;margin:0;letter-spacing:.5px}
 .stats{color:var(--mute);font-size:14px;display:flex;gap:14px}
 .stats b{color:var(--txt);font-weight:600;font-variant-numeric:tabular-nums}
-.ng{width:var(--s);margin-bottom:8px}.ng button{width:100%;padding:9px 0;font-size:14px}
+.ng{width:var(--s);margin-bottom:8px}.ng button{width:100%;padding:10px 0;font-size:15px}
 .diff{display:flex;gap:6px;width:var(--s);margin-bottom:12px}
 button{font:inherit;color:var(--txt);background:var(--panel);border:1px solid var(--line);border-radius:8px;cursor:pointer}
 button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
@@ -31,39 +31,45 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .c .n.on{color:var(--glow)}
 #bw{position:relative}#pz{position:absolute;inset:0;background:var(--bg);border:2px solid #4a5675;border-radius:6px;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-size:22px;z-index:3}#pz.show{display:flex}#pz button{padding:10px 26px;background:var(--sel);font-size:16px}
 .pad{width:var(--s);display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:14px;min-height:62px}
-.pad button{padding:8px 0;font-size:22px;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.pad button{height:clamp(56px,9dvh,84px);padding:0;font-size:clamp(22px,4dvh,30px);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
 .pad button small{font-size:11px;color:var(--mute)}
 .pad button.act{border-color:var(--glow);box-shadow:0 0 10px rgba(124,196,255,.5)}
 .pad button.done{visibility:hidden}
 .tools{width:var(--s);display:flex;gap:6px;margin-top:10px}
-.tools button{flex:1;padding:10px 0;font-size:14px;min-width:0}
+.tools button{flex:1;height:clamp(46px,6.5dvh,60px);padding:0;font-size:15px;min-width:0}
 .tools button.on{background:var(--sel);border-color:var(--glow)}
-:is(#win,#st){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
-:is(#win,#st).show{display:flex}
-:is(#win,#st)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
-:is(#win,#st) h2{margin:0 0 6px}:is(#win,#st) p{color:var(--mute);margin:0 0 16px}
-:is(#win,#st) button{padding:10px 22px;background:var(--sel)}
+:is(#win,#st,#nm){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
+:is(#win,#st,#nm).show{display:flex}
+:is(#win,#st,#nm)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
+:is(#win,#st,#nm) h2{margin:0 0 6px}:is(#win,#st,#nm) p{color:var(--mute);margin:0 0 16px}
+:is(#win,#st,#nm) button{padding:10px 22px;background:var(--sel)}
 @media(prefers-reduced-motion:no-preference){.c{transition:background .12s}}
 #hx{width:var(--s);margin-top:10px;font-size:14px;line-height:1.45;color:var(--given);background:var(--panel);border-left:3px solid var(--glow);padding:9px 12px;border-radius:6px;display:none}
 #hx:not(:empty){display:block}
 .stats button{padding:3px 10px;font-size:13px}
-#stb table{border-collapse:collapse;margin:0 auto 14px}#stb td,#stb th{padding:6px 14px;text-align:right;font-variant-numeric:tabular-nums}#stb td:first-child{text-align:left;color:var(--mute)}
+#stb table{border-collapse:collapse;margin:0 auto 14px}#stb td,#stb th{padding:6px 7px;font-size:14px;text-align:right;font-variant-numeric:tabular-nums}#stb td:first-child{text-align:left;color:var(--mute)}
 #st button+button{margin-left:8px;background:var(--panel)}
+#st>div{padding:22px 12px}
+#nml{display:grid;gap:8px;margin-bottom:12px;min-width:240px}
+#nml button{padding:13px 16px;font-size:17px;display:flex;justify-content:space-between;background:var(--cell)}
+#nml button small{color:var(--mute);font-size:13px;align-self:center}
+#nml button.on{border-color:var(--glow);background:var(--sel)}
+#nm>div>button{background:var(--panel)}
 </style></head><body>
 <div class="top"><h1>Sudoku</h1><div class="stats"><button id="stbtn">Stats</button><span>Mistakes <b id="mis">0</b></span><span>Hints <b id="hn">0</b></span><span><b id="tm">0:00</b></span></div></div>
 <div class="ng"><button id="new">New game</button></div>
-<div class="diff" id="diff"></div>
 <div id="bw"><div id="board"></div><div id="pz"><span>Paused</span><button id="resume">Resume</button></div></div>
 <div class="pad" id="pad"></div>
 <div class="tools">
 <button id="notes">Notes: off</button><button id="erase">Erase</button><button id="hint">Hint</button><button id="pause">Pause</button>
 </div>
 <div id="hx" aria-live="polite"></div>
+<div id="nm"><div><h2>New game</h2><div id="nml"></div><button id="nmx">Cancel</button></div></div>
 <div id="st"><div><h2>Statistics</h2><div id="stb"></div><p>Counts solved games only.</p><button id="stx">Close</button><button id="str">Reset stats</button></div></div>
 <div id="win"><div><h2>Solved!</h2><p id="wmsg"></p><button id="again">Play again</button></div></div>
 <script>
 const $=id=>document.getElementById(id);
-const LV={Easy:45,Normal:33,Hard:29,DSC:25};
+const LV={Easy:45,Normal:33,Hard:31,Expert:29,DSC:25};
 let G={lv:'Easy',puz:[],sol:[],v:[],nt:[],sel:-1,note:false,mis:0,t:0,done:false,hints:0,paused:false};
 const peers=i=>{const r=i/9|0,c=i%9,b=(r/3|0)*3+(c/3|0);return j=>{const r2=j/9|0,c2=j%9;return r2==r||c2==c||((r2/3|0)*3+(c2/3|0))==b}};
 function cands(g,i){let m=0x3fe;const r=i/9|0,c=i%9,br=r-r%3,bc=c-c%3;
@@ -119,13 +125,11 @@ function build(){
   b.onclick=()=>{G.sel=i;draw()};bd.appendChild(b)}
  const ps=$('pad');ps.innerHTML='';
  for(let d=1;d<=9;d++){const b=document.createElement('button');b.dataset.d=d;b.innerHTML=d+'<small></small>';b.onclick=()=>put(d);ps.appendChild(b)}
- const df=$('diff');df.innerHTML='';
- for(const l in LV){const b=document.createElement('button');b.textContent=l;b.dataset.l=l;b.onclick=()=>start(l);df.appendChild(b)}
 }
 function start(lv){
  G.lv=lv;$('win').classList.remove('show');$('hx').textContent='';
  document.body.style.cursor='progress';
- setTimeout(()=>{const{puz,sol}=generate(LV[lv],lv==='Normal'||lv==='Hard');
+ setTimeout(()=>{const{puz,sol}=generate(LV[lv],lv!=='Easy'&&lv!=='DSC');
   Object.assign(G,{puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,hints:0,paused:false});
   document.body.style.cursor='';save();draw()},20)}
 function place(i,d,hint){
@@ -190,16 +194,21 @@ function draw(){
   else el.textContent=''}
  const cnt=Array(10).fill(0);for(let i=0;i<81;i++)if(G.v[i]&&G.v[i]===G.sol[i])cnt[G.v[i]]++;
  for(const b of $('pad').children){const d=+b.dataset.d;b.classList.toggle('done',cnt[d]>=9);b.classList.toggle('act',sv===d);b.querySelector('small').textContent=9-cnt[d]}
- for(const b of $('diff').children)b.classList.toggle('on',b.dataset.l===G.lv);
- $('mis').textContent=G.mis;$('hn').textContent=G.hints;$('pz').classList.toggle('show',!!G.paused);$('pause').textContent=G.paused?'Resume':'Pause';$('tm').textContent=fmt(G.t);
+$('new').textContent='New game · '+G.lv;
+  $('mis').textContent=G.mis;$('hn').textContent=G.hints;$('pz').classList.toggle('show',!!G.paused);$('pause').textContent=G.paused?'Resume':'Pause';$('tm').textContent=fmt(G.t);
  $('notes').textContent='Notes: '+(G.note?'on':'off');$('notes').classList.toggle('on',G.note)}
 function save(){try{localStorage.setItem('sudoku-save',JSON.stringify(G))}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem('sudoku-save'));if(s&&s.puz&&s.puz.length==81&&!s.done){Object.assign(G,s);return true}}catch(e){}return false}
 $('notes').onclick=()=>{G.note=!G.note;draw()};
 $('stbtn').onclick=showStats;$('stx').onclick=()=>$('st').classList.remove('show');$('str').onclick=()=>{if(confirm('Delete all saved statistics?')){try{localStorage.removeItem('sudoku-stats')}catch(e){}showStats()}};$('pause').onclick=()=>pause(!G.paused);$('resume').onclick=()=>pause(false);$('erase').onclick=erase;$('hint').onclick=hint;
-$('new').onclick=()=>start(G.lv);$('again').onclick=()=>start(G.lv);
+let wasP=false;
+function openNew(){wasP=G.paused;pause(true);const l=$('nml');l.innerHTML='';
+ for(const k in LV){const b=document.createElement('button');b.innerHTML='<span>'+k+'</span><small>'+LV[k]+' numbers</small>';b.className=k===G.lv?'on':'';b.onclick=()=>{$('nm').classList.remove('show');start(k)};l.appendChild(b)}
+ $('nm').classList.add('show')}
+function closeNew(){if($('nm').classList.contains('show')){$('nm').classList.remove('show');if(!wasP)pause(false)}}
+$('new').onclick=openNew;$('nmx').onclick=closeNew;$('again').onclick=()=>start(G.lv);
 document.addEventListener('keydown',e=>{
- if(e.key==='Escape')$('st').classList.remove('show');
+ if(e.key==='Escape'){$('st').classList.remove('show');closeNew()}
  if(e.key.toLowerCase()==='p'){pause(!G.paused);return}
  if(G.paused)return;
  if(e.key>='1'&&e.key<='9')put(+e.key);
@@ -210,5 +219,9 @@ document.addEventListener('keydown',e=>{
   if(e.key=='ArrowLeft'&&i%9)i--;if(e.key=='ArrowRight'&&i%9<8)i++;G.sel=i;draw()}});
 setInterval(()=>{if(!G.done&&!G.paused&&G.puz.length){G.t++;$('tm').textContent=fmt(G.t);if(G.t%5==0)save()}},1000);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause(true)});
-build();if(load()){G.paused=false;G.hints=G.hints||0}if(G.puz.length)draw();else start('Easy');
+function migrate(){try{if(localStorage.getItem('sudoku-v2'))return;
+ const st=stats();if(st.Hard){st.Expert=st.Hard;delete st.Hard;localStorage.setItem('sudoku-stats',JSON.stringify(st))}
+ const sv=JSON.parse(localStorage.getItem('sudoku-save'));if(sv&&sv.lv==='Hard'){sv.lv='Expert';localStorage.setItem('sudoku-save',JSON.stringify(sv))}
+ localStorage.setItem('sudoku-v2','1')}catch(e){}}
+migrate();build();if(load()){G.paused=false;G.hints=G.hints||0}if(G.puz.length)draw();else start('Easy');
 </script></body></html>
