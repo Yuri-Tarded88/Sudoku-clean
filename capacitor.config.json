@@ -1,0 +1,6 @@
+{
+  "appId": "com.mysudoku.app",
+  "appName": "Sudoku",
+  "webDir": "www",
+  "backgroundColor": "#0d1017"
+}

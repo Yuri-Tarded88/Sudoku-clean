@@ -1,0 +1,32 @@
+SUDOKU APK - STEP BY STEP (about 15 minutes, nothing to install)
+
+A) Put the project on GitHub
+1. Go to github.com and create a free account (or log in).
+2. Click the "+" at the top right, then "New repository".
+   Name it: sudoku    Keep it Private    Click "Create repository".
+3. On the next page click the link "uploading an existing file".
+4. Unzip this project on your PC. Open the unzipped folder, select EVERYTHING
+   inside it (the .github folder, www folder, and the files) and drag it into
+   the GitHub page. Wait until all files are listed, then click "Commit changes".
+   Check that the repo shows: .github, www, package.json, capacitor.config.json.
+   (If ".github" is missing: click "Add file" > "Create new file", type
+   .github/workflows/build.yml as the name and paste the contents of that file.)
+
+B) Let GitHub build the APK
+5. Click the "Actions" tab. If asked, click the green button to enable workflows.
+6. Open "Build Android APK" and wait about 5-8 minutes for a green check mark.
+   (If nothing started: click "Run workflow" on the right.)
+7. Click the finished run, scroll to "Artifacts" at the bottom and click
+   "sudoku-apk" to download a zip. Unzip it: inside is app-debug.apk
+
+C) Install on your Samsung phone
+8. Send app-debug.apk to your phone (USB cable, Google Drive, or email to yourself).
+9. Open it from "My Files". If asked, allow installing from this source.
+   If Play Protect warns, choose "Install anyway" (the app is your own).
+10. Open "Sudoku" - it works fully offline.
+
+NOTES
+- Your saved game and statistics stay on the phone. They are deleted only if
+  you uninstall the app (updating over the old APK keeps them).
+- To update the game later: replace www/index.html in GitHub (open it, click the
+  pencil, or upload the new file with the same name) and repeat steps 6-9.
