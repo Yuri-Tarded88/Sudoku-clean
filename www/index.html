@@ -19,7 +19,7 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .diff button{flex:1;padding:8px 0;font-size:14px}
 .diff button.on{background:var(--sel);border-color:var(--glow)}
 #board{width:var(--s);height:var(--s);display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-template-rows:repeat(9,minmax(0,1fr));border:2px solid #4a5675;border-radius:6px;overflow:hidden;background:var(--line);gap:1px}
-.c{position:relative;background:var(--cell);border:0;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--s)/15);color:var(--txt);padding:0;min-width:0;min-height:0;overflow:hidden;line-height:1}
+.c{position:relative;background:var(--cell);border:0;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--s)/15);color:var(--txt);padding:0;min-width:0;min-height:0;overflow:hidden;line-height:1;contain:layout paint style}
 .c.given{color:var(--given);font-weight:600}
 .c.r2,.c.r5{box-shadow:0 1px 0 #4a5675}
 .c.k2,.c.k5{box-shadow:1px 0 0 #4a5675}
@@ -38,14 +38,15 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .pad button.act{border-color:var(--glow);box-shadow:0 0 10px rgba(124,196,255,.5)}
 .pad button.done{visibility:hidden}
 .tools{width:var(--s);display:flex;gap:6px;margin-top:10px}
-.tools button{flex:1;height:clamp(46px,6.5dvh,60px);padding:0;font-size:15px;min-width:0}
+.tools button{flex:1;height:clamp(46px,6.5dvh,60px);padding:0;font-size:14px;min-width:0}
+.tools button:disabled{opacity:.4;cursor:default}
 .tools button.on{background:var(--sel);border-color:var(--glow)}
 :is(#win,#st,#nm,#set){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
 :is(#win,#st,#nm,#set).show{display:flex}
 :is(#win,#st,#nm,#set)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
 :is(#win,#st,#nm,#set) h2{margin:0 0 6px}:is(#win,#st,#nm,#set) p{color:var(--mute);margin:0 0 16px}
 :is(#win,#st,#nm,#set) button{padding:10px 22px;background:var(--sel)}
-@media(prefers-reduced-motion:no-preference){.c{transition:background .12s}}
+button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #hx{width:var(--s);margin-top:10px;font-size:14px;line-height:1.45;color:var(--given);background:var(--panel);border-left:3px solid var(--glow);padding:9px 12px;border-radius:6px;display:none}
 #hx:not(:empty){display:block}
 #stb table{border-collapse:collapse;margin:0 auto 14px}#stb td,#stb th{padding:6px 7px;font-size:14px;text-align:right;font-variant-numeric:tabular-nums}#stb td:first-child{text-align:left;color:var(--mute)}
@@ -55,6 +56,9 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 #nml button{padding:13px 16px;font-size:17px;display:flex;justify-content:space-between;background:var(--cell)}
 #nml button small{color:var(--mute);font-size:13px;align-self:center}
 #nml button.on{border-color:var(--glow);background:var(--sel)}
+#nml button.daily{border-color:#3d5a85;flex-direction:column;align-items:flex-start;gap:3px}#nml button.daily small{align-self:flex-start}
+#nml .dsep{height:1px;background:var(--line);margin:2px 0}
+#stb p.dl{margin:0 0 12px;font-size:14px;color:var(--txt)}
 #nm>div>button{background:var(--panel)}
 #set>div{width:min(92vw,420px);max-height:92dvh;overflow:auto;text-align:left;padding:20px 18px}
 #set h2{text-align:center;margin-bottom:2px}
@@ -72,7 +76,7 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 <div id="bw"><div id="board"></div><div id="pz"><span>Paused</span><button id="resume">Resume</button></div></div>
 <div class="pad" id="pad"></div>
 <div class="tools">
-<button id="notes">Notes: off</button><button id="erase">Erase</button><button id="hint">Hint</button><button id="pause">Pause</button>
+<button id="undo">Undo</button><button id="notes">Notes</button><button id="erase">Erase</button><button id="hint">Hint</button><button id="pause">Pause</button>
 </div>
 <div id="hx" aria-live="polite"></div>
 <div id="nm"><div><h2>New game</h2><div id="nml"></div><button id="nmx">Cancel</button></div></div>
@@ -95,8 +99,12 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 <div id="win"><div><h2>Solved!</h2><p id="wmsg"></p><button id="again">Play again</button></div></div>
 <script>
 const $=id=>document.getElementById(id);
+let rnd=Math.random;
+const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=rnd()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function mulberry(a){return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const LV={Easy:45,Normal:33,Hard:31,Expert:29,DSC:25};
-let G={lv:'Easy',puz:[],sol:[],v:[],nt:[],sel:-1,note:false,mis:0,t:0,done:false,hints:0,paused:false};
+let G={lv:'Easy',puz:[],sol:[],v:[],nt:[],sel:-1,note:false,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0,date:''};
 const peers=i=>{const r=i/9|0,c=i%9,b=(r/3|0)*3+(c/3|0);return j=>{const r2=j/9|0,c2=j%9;return r2==r||c2==c||((r2/3|0)*3+(c2/3|0))==b}};
 function cands(g,i){let m=0x3fe;const r=i/9|0,c=i%9,br=r-r%3,bc=c-c%3;
  for(let k=0;k<9;k++){m&=~(1<<g[r*9+k]);m&=~(1<<g[k*9+c]);m&=~(1<<g[(br+(k/3|0))*9+bc+k%3])}return m}
@@ -107,7 +115,7 @@ function solveCount(g,lim,rand){let n=0;
   if(b<0){n++;return n>=lim}
   if(!bm)return false;
   let ds=[];for(let d=1;d<=9;d++)if(bm>>d&1)ds.push(d);
-  if(rand)ds.sort(()=>Math.random()-.5);
+  if(rand)shuf(ds);
   for(const d of ds){g[b]=d;if(rec()){if(!rand)g[b]=0;return true}g[b]=0}
   return false})();return n}
 const UN=[];
@@ -131,46 +139,62 @@ function gen1(clues){
   for(let i=0;i<81;i++){if(!puz[i]||tried.has(i))continue;pool.push(i);
    if(Math.max(cnt(UN[i/9|0]),cnt(UN[9+i%9]),cnt(UN[18+BX(i)]))>=6)hot.push(i)}
   const L=hot.length?hot:pool;if(!L.length)break;
-  const best=L[Math.random()*L.length|0];
+  const best=L[rnd()*L.length|0];
   const k=puz[best];puz[best]=0;
   if(solveCount(puz.slice(),2,false)!==1||(clues>=29&&!singles(puz))){puz[best]=k;tried.add(best)}else left--}
  for(let it=0;it<200;it++){
   const over=UN.find(u=>cnt(u)>6);if(!over)break;
   let done=false;
-  for(const c of over.filter(j=>puz[j]).sort(()=>Math.random()-.5)){puz[c]=0;
-   const em=[];for(let i=0;i<81;i++)if(!puz[i]&&i!==c)em.push([cnt(UN[i/9|0])+cnt(UN[9+i%9])+cnt(UN[18+BX(i)])+Math.random(),i]);
+  for(const c of shuf(over.filter(j=>puz[j]))){puz[c]=0;
+   const em=[];for(let i=0;i<81;i++)if(!puz[i]&&i!==c)em.push([cnt(UN[i/9|0])+cnt(UN[9+i%9])+cnt(UN[18+BX(i)])+rnd(),i]);
    em.sort((x,y)=>x[0]-y[0]);const q=em[0][1];puz[q]=sol[q];
    if(solveCount(puz.slice(),2,false)===1&&(clues<29||singles(puz))){done=true;break}
    puz[q]=0;puz[c]=sol[c]}
   if(!done)break}
  return{puz,sol}}
-function build(){
+const DAILY_CLUES=31;
+function makeDaily(k){const keep=rnd;rnd=mulberry(hashStr('sudoku-daily-v1:'+k));try{return generate(DAILY_CLUES,true)}finally{rnd=keep}}
+function fast(el,fn){
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();fn()});
+ el.addEventListener('click',e=>{if(e.detail===0)fn()})}
+function build(){_cl=[];_ct=[];
  const bd=$('board');bd.innerHTML='';
  for(let i=0;i<81;i++){const b=document.createElement('button');b.className='c r'+(i/9|0)+' k'+i%9;b.dataset.i=i;
   b.setAttribute('aria-label','Row '+((i/9|0)+1)+' column '+(i%9+1));
-  b.onclick=()=>{G.sel=i;draw()};bd.appendChild(b)}
+  fast(b,()=>{G.sel=i;if(G.v[i])G.hd=0;draw()});bd.appendChild(b)}
  const ps=$('pad');ps.innerHTML='';
- for(let d=1;d<=9;d++){const b=document.createElement('button');b.dataset.d=d;b.innerHTML=d+'<small></small>';b.onclick=()=>put(d);ps.appendChild(b)}
+ for(let d=1;d<=9;d++){const b=document.createElement('button');b.dataset.d=d;b.innerHTML=d+'<small></small>';fast(b,()=>put(d));ps.appendChild(b)}
 }
 function start(lv){
  G.lv=lv;$('win').classList.remove('show');$('hx').textContent='';
  document.body.style.cursor='progress';
  setTimeout(()=>{const{puz,sol}=generate(LV[lv],lv!=='Easy'&&lv!=='DSC');
-  Object.assign(G,{puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,hints:0,paused:false});
+  Object.assign(G,{puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0,date:''});
   document.body.style.cursor='';save();draw()},20)}
+function snap(i){G.hist.push({v:G.v.slice(),nt:G.nt.slice(),i});if(G.hist.length>120)G.hist.shift()}
+function undo(){if(G.done||G.paused||!G.hist.length)return;const h=G.hist.pop();G.v=h.v;G.nt=h.nt;G.sel=h.i;G.hd=0;$('hx').textContent='';draw();save()}
+function onWin(){let extra='';
+ if(G.lv==='Daily'){if(recDaily()){const n=dailyStreak();extra=' Daily streak: '+n+' day'+(n==1?'':'s')+'.'}else extra=' (Already counted for this date.)'}
+ else rec();
+ $('wmsg').textContent=(G.lv==='Daily'?'Daily puzzle':G.lv)+' in '+fmt(G.t)+' with '+G.mis+' mistake'+(G.mis==1?'':'s')+' and '+G.hints+' hint'+(G.hints==1?'':'s')+'.'+extra;
+ $('win').classList.add('show')}
 function place(i,d,hint){
+ snap(i);G.hd=0;
  if(!hint)$('hx').textContent='';
  G.v[i]=d;G.nt[i]=0;
  if(d!==G.sol[i]){if(!hint)G.mis++}
  else{const p=peers(i);for(let j=0;j<81;j++)if(p(j))G.nt[j]&=~(1<<d)}
- if(G.v.every((x,j)=>x===G.sol[j])){G.done=true;rec();$('wmsg').textContent=G.lv+' in '+fmt(G.t)+' with '+G.mis+' mistake'+(G.mis==1?'':'s')+' and '+G.hints+' hint'+(G.hints==1?'':'s')+'.';$('win').classList.add('show')}
+ if(G.v.every((x,j)=>x===G.sol[j])){G.done=true;onWin()}
  draw();save()}
 function put(d){
- const i=G.sel;if(i<0||G.puz[i]||G.done||G.paused)return;
- if(G.note){if(G.v[i])return;G.nt[i]^=1<<d;draw();save();return}
- if(G.v[i]===G.sol[i])return;
+ if(G.done||G.paused)return;
+ const i=G.sel,locked=i<0||G.puz[i]||G.v[i]===G.sol[i];
+ if(locked){G.hd=G.hd===d?0:d;draw();return}
+ if(G.note){if(G.v[i])return;snap(i);G.nt[i]^=1<<d;draw();save();return}
  place(i,d,false)}
-function erase(){const i=G.sel;if(i<0||G.puz[i]||G.done||G.paused)return;if(G.v[i]!==G.sol[i])G.v[i]=0;G.nt[i]=0;draw();save()}
+function erase(){const i=G.sel;if(i<0||G.puz[i]||G.done||G.paused)return;
+ if(!((G.v[i]&&G.v[i]!==G.sol[i])||G.nt[i]))return;
+ snap(i);if(G.v[i]!==G.sol[i])G.v[i]=0;G.nt[i]=0;draw();save()}
 const BN=['top-left','top-middle','top-right','middle-left','center','middle-right','bottom-left','bottom-middle','bottom-right'];
 const lab=(t,k)=>t==0?'row '+(k+1):t==1?'column '+(k+1):'the '+BN[k]+' box';
 function smart(g){
@@ -200,32 +224,61 @@ function hint(){
  G.hints++;G.sel=i;place(i,G.sol[i],true)}
 function stats(){try{return JSON.parse(localStorage.getItem('sudoku-stats'))||{}}catch(e){return{}}}
 function rec(){const s=stats(),o=s[G.lv]||{n:0,sum:0,best:0,worst:0};o.n++;o.sum+=G.t;o.best=o.best?Math.min(o.best,G.t):G.t;o.worst=Math.max(o.worst,G.t);s[G.lv]=o;try{localStorage.setItem('sudoku-stats',JSON.stringify(s))}catch(e){}}
+const DK='sudoku-daily',DG='sudoku-daily-game';
+const pad2=n=>String(n).padStart(2,'0');
+const dateKey=(d=new Date())=>d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+function prevKey(k){const[y,m,d]=k.split('-').map(Number);return dateKey(new Date(y,m-1,d-1))}
+function dailyData(){try{return JSON.parse(localStorage.getItem(DK))||{}}catch(e){return{}}}
+function dailyStreak(){const o=dailyData(),t=dateKey();return(o.last===t||o.last===prevKey(t))?(o.streak||0):0}
+function recDaily(){const o=dailyData(),k=G.date;o.hist=o.hist||{};
+ if(!k||o.hist[k])return false;
+ o.streak=(o.last===prevKey(k))?(o.streak||0)+1:1;
+ o.best=Math.max(o.best||0,o.streak);o.last=k;o.solved=(o.solved||0)+1;
+ o.hist[k]={t:G.t,m:G.mis,h:G.hints};
+ const ks=Object.keys(o.hist).sort();while(ks.length>30)delete o.hist[ks.shift()];
+ try{localStorage.setItem(DK,JSON.stringify(o))}catch(e){}return true}
+function startDaily(){
+ const k=dateKey();$('win').classList.remove('show');$('hx').textContent='';
+ if(G.lv==='Daily'&&G.date===k&&!G.done&&G.puz.length){G.paused=false;draw();return}
+ let s=null;try{s=JSON.parse(localStorage.getItem(DG))}catch(e){}
+ if(s&&s.lv==='Daily'&&s.date===k&&s.puz&&s.puz.length===81&&!s.done)Object.assign(G,s,{paused:false,sel:-1,hist:[],hd:0});
+ else{const{puz,sol}=makeDaily(k);Object.assign(G,{lv:'Daily',date:k,puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0})}
+ save();draw()}
 let stWas=false;
 function showStats(){if(!$('st').classList.contains('show'))stWas=G.paused;pause(true);const s=stats();let h='<table><tr><th></th>';for(const l in LV)h+='<th>'+l+'</th>';h+='</tr>';
  const rows=[['Solved',o=>o.n],['Average',o=>fmt(Math.round(o.sum/o.n))],['Shortest',o=>fmt(o.best)],['Longest',o=>fmt(o.worst)]];
  for(const[n,f]of rows){h+='<tr><td>'+n+'</td>';for(const l in LV){const o=s[l];h+='<td>'+(o&&o.n?f(o):n==='Solved'?0:'–')+'</td>'}h+='</tr>'}
- $('stb').innerHTML=h+'</table>';$('st').classList.add('show')}
+ const dd=dailyData();$('stb').innerHTML=h+'</table><p class="dl">Daily puzzle: streak <b>'+dailyStreak()+'</b> · best <b>'+(dd.best||0)+'</b> · solved <b>'+(dd.solved||0)+'</b></p>';$('st').classList.add('show')}
 function closeStats(){if($('st').classList.contains('show')){$('st').classList.remove('show');if(!stWas)pause(false)}}
 function pause(p){if(G.done)return;G.paused=p;draw()}
 const fmt=s=>(s/60|0)+':'+String(s%60).padStart(2,'0');
+let _cl=[],_ct=[];
+const hv=()=>G.hd||(G.sel>=0?G.v[G.sel]:0);
+const setTxt=(el,t)=>{if(el.textContent!==t)el.textContent=t};
 function draw(){
- const cs=$('board').children,sv=G.sel>=0?G.v[G.sel]:0,p=G.sel>=0?peers(G.sel):null;
- for(let i=0;i<81;i++){const el=cs[i],v=G.v[i];let cl='c r'+(i/9|0)+' k'+i%9;
+ const cs=$('board').children,sv=hv(),p=G.sel>=0?peers(G.sel):null;
+ for(let i=0;i<81;i++){const v=G.v[i],n=G.nt[i];let cl='c r'+(i/9|0)+' k'+i%9;
   if(G.puz[i])cl+=' given';
   if(p&&p(i))cl+=' hl';
   if(i===G.sel)cl+=' sel';
   if(sv&&v===sv)cl+=' same';
   if(v&&v!==G.sol[i])cl+=' bad';
-  if(sv&&!v&&(G.nt[i]>>sv&1))cl+=' nm';
-  el.className=cl;
-  if(v)el.textContent=v;
-  else if(G.nt[i]){let h='<span class="n">';for(let d=1;d<=9;d++)h+='<span class="'+(sv===d&&(G.nt[i]>>d&1)?'on':'')+'">'+(G.nt[i]>>d&1?d:'')+'</span>';el.innerHTML=h+'</span>'}
-  else el.textContent=''}
+  if(sv&&!v&&(n>>sv&1))cl+=' nm';
+  const el=cs[i];
+  if(_cl[i]!==cl){el.className=cl;_cl[i]=cl}
+  const ck=v?v:(n?'n'+n+'.'+((sv&&(n>>sv&1))?sv:0):'');
+  if(_ct[i]!==ck){
+   if(v)el.textContent=v;
+   else if(n){let h='<span class="n">';for(let d=1;d<=9;d++)h+='<span class="'+(sv===d&&(n>>d&1)?'on':'')+'">'+(n>>d&1?d:'')+'</span>';el.innerHTML=h+'</span>'}
+   else el.textContent='';
+   _ct[i]=ck}}
  const cnt=Array(10).fill(0);for(let i=0;i<81;i++)if(G.v[i]&&G.v[i]===G.sol[i])cnt[G.v[i]]++;
- for(const b of $('pad').children){const d=+b.dataset.d;b.classList.toggle('done',cnt[d]>=9);b.classList.toggle('act',sv===d);b.querySelector('small').textContent=9-cnt[d]}
-$('new').textContent='New game · '+G.lv;
-  $('mis').textContent=G.mis;$('hn').textContent=G.hints;$('pz').classList.toggle('show',!!G.paused);$('pause').textContent=G.paused?'Resume':'Pause';$('tm').textContent=fmt(G.t);
- $('notes').textContent='Notes: '+(G.note?'on':'off');$('notes').classList.toggle('on',G.note)}
+ for(const b of $('pad').children){const d=+b.dataset.d,left=9-cnt[d];b.classList.toggle('done',cnt[d]>=9);b.classList.toggle('act',sv===d);if(b._t!==left){b.querySelector('small').textContent=left;b._t=left}}
+ setTxt($('new'),'New game · '+G.lv);
+ setTxt($('mis'),String(G.mis));setTxt($('hn'),String(G.hints));setTxt($('tm'),fmt(G.t));
+ $('pz').classList.toggle('show',!!G.paused);setTxt($('pause'),G.paused?'Resume':'Pause');
+ setTxt($('notes'),G.note?'Notes ON':'Notes');$('notes').classList.toggle('on',G.note);
+ $('undo').disabled=!G.hist.length||G.done}
 const BUILD='__BUILD__',PRE='SUDOKU1:';
 const isNative=()=>!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
 let _sh=null;
@@ -234,7 +287,7 @@ function sharer(){if(_sh)return _sh;
   if(C&&C.Plugins&&C.Plugins.Share)_sh=C.Plugins.Share;
   else if(C&&C.registerPlugin&&(C.PluginHeaders||[]).some(h=>h.name==='Share'))_sh=C.registerPlugin('Share')}catch(e){}
  return _sh}
-function encodeBackup(){const o={app:'sudoku',v:1,saved:new Date().toISOString().slice(0,10),stats:stats()};return PRE+btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function encodeBackup(){const o={app:'sudoku',v:2,saved:new Date().toISOString().slice(0,10),stats:stats(),daily:dailyData()};return PRE+btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
 function decodeBackup(txt){
  let t=String(txt||'').replace(/\s+/g,'');if(!t)return null;
  try{if(t.startsWith(PRE))t=decodeURIComponent(escape(atob(t.slice(PRE.length))));
@@ -244,7 +297,15 @@ function decodeBackup(txt){
    const n=+x.n,sum=+x.sum,best=+x.best,worst=+x.worst;
    if([n,sum,best,worst].some(v=>!isFinite(v)||v<0))return null;
    if(n>0)out[l]={n:Math.floor(n),sum,best,worst}}
-  return out}catch(e){return null}}
+  let dOut=null;
+  if(o.daily&&typeof o.daily==='object'&&Object.keys(o.daily).length){
+   const d=o.daily,okd=/^\d{4}-\d{2}-\d{2}$/,num=x=>isFinite(+x)&&+x>=0;
+   if(!['streak','best','solved'].every(k=>d[k]===undefined||num(d[k])))return null;
+   if(d.last&&!okd.test(d.last))return null;
+   const hist={};
+   for(const k of Object.keys(d.hist||{}).sort().slice(-30)){const e=d.hist[k];if(!okd.test(k)||!e||!num(e.t)||!num(e.m)||!num(e.h))return null;hist[k]={t:+e.t,m:+e.m,h:+e.h}}
+   dOut={streak:Math.floor(d.streak||0),best:Math.floor(d.best||0),solved:Math.floor(d.solved||0),last:d.last||'',hist}}
+  return{stats:out,daily:dOut}}catch(e){return null}}
 async function copyText(t,ta){
  try{await navigator.clipboard.writeText(t);return true}catch(e){}
  try{ta.focus();ta.select();ta.setSelectionRange(0,t.length);return document.execCommand('copy')}catch(e){return false}}
@@ -271,27 +332,35 @@ $('sshare').onclick=async()=>{if(!await shareText($('sexp').value))msg('Sharing 
 $('ssave').onclick=()=>{saveFile($('sexp').value);msg('Backup file saved to your downloads folder.')};
 $('sload').onclick=()=>$('sfile').click();
 $('sfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('simp').value=String(r.result||'').trim();msg('File loaded - press Import.')};r.readAsText(f);e.target.value=''};
-$('simpb').onclick=()=>{const s=decodeBackup($('simp').value);
- if(!s){msg('That is not a valid backup code.');return}
- const n=Object.values(s).reduce((a,x)=>a+x.n,0);
- if(Object.keys(stats()).length&&!confirm('Replace the statistics on this device with the backup ('+n+' solved game'+(n==1?'':'s')+')?'))return;
- try{localStorage.setItem('sudoku-stats',JSON.stringify(s))}catch(e){msg('Could not save on this device.');return}
+$('simpb').onclick=()=>{const r=decodeBackup($('simp').value);
+ if(!r){msg('That is not a valid backup code.');return}
+ const n=Object.values(r.stats).reduce((a,x)=>a+x.n,0)+(r.daily?r.daily.solved:0);
+ const have=Object.keys(stats()).length||(dailyData().solved||0);
+ if(have&&!confirm('Replace the statistics on this device with the backup ('+n+' solved game'+(n==1?'':'s')+')?'))return;
+ try{localStorage.setItem('sudoku-stats',JSON.stringify(r.stats));if(r.daily)localStorage.setItem(DK,JSON.stringify(r.daily))}catch(e){msg('Could not save on this device.');return}
  $('sexp').value=encodeBackup();$('simp').value='';msg('Imported '+n+' solved game'+(n==1?'':'s')+'.')};
-function save(){try{localStorage.setItem('sudoku-save',JSON.stringify(G))}catch(e){}}
+function save(){try{const j=JSON.stringify(G,(k,v)=>k==='hist'||k==='hd'?undefined:v);localStorage.setItem('sudoku-save',j);if(G.lv==='Daily')localStorage.setItem(DG,j)}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem('sudoku-save'));if(s&&s.puz&&s.puz.length==81&&!s.done){Object.assign(G,s);return true}}catch(e){}return false}
 $('notes').onclick=()=>{G.note=!G.note;draw()};
 $('stbtn').onclick=showStats;$('stx').onclick=closeStats;$('str').onclick=()=>{if(confirm('Delete all saved statistics?')){try{localStorage.removeItem('sudoku-stats')}catch(e){}showStats()}};$('pause').onclick=()=>pause(!G.paused);$('resume').onclick=()=>pause(false);$('erase').onclick=erase;$('hint').onclick=hint;
 let wasP=false;
 function openNew(){wasP=G.paused;pause(true);const l=$('nml');l.innerHTML='';
+ {const k=dateKey(),o=dailyData(),done=!!(o.hist&&o.hist[k]),n=dailyStreak();
+  const d=document.createElement('button');d.className='daily'+(G.lv==='Daily'?' on':'');
+  d.innerHTML='<span>Daily puzzle</span><small>Hard · '+(done?'solved · ':'')+'streak '+n+'</small>';
+  d.onclick=()=>{$('nm').classList.remove('show');startDaily()};l.appendChild(d);
+  const sp=document.createElement('div');sp.className='dsep';l.appendChild(sp)}
  for(const k in LV){const b=document.createElement('button');b.innerHTML='<span>'+k+'</span><small>'+LV[k]+' numbers</small>';b.className=k===G.lv?'on':'';b.onclick=()=>{$('nm').classList.remove('show');start(k)};l.appendChild(b)}
  $('nm').classList.add('show')}
 function closeNew(){if($('nm').classList.contains('show')){$('nm').classList.remove('show');if(!wasP)pause(false)}}
-$('new').onclick=openNew;$('nmx').onclick=closeNew;$('again').onclick=()=>start(G.lv);
+$('new').onclick=openNew;$('nmx').onclick=closeNew;$('again').onclick=()=>{$('win').classList.remove('show');if(G.lv==='Daily')openNew();else start(G.lv)};
+$('undo').onclick=undo;
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape'){closeStats();closeNew();closeSet()}
  if(/^(TEXTAREA|INPUT)$/.test((e.target&&e.target.tagName)||''))return;
  if(e.key.toLowerCase()==='p'){pause(!G.paused);return}
  if(G.paused)return;
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'||e.key.toLowerCase()==='u'){undo();return}
  if(e.key>='1'&&e.key<='9')put(+e.key);
  else if(e.key==='Backspace'||e.key==='Delete'||e.key==='0')erase();
  else if(e.key.toLowerCase()==='n'){G.note=!G.note;draw()}
