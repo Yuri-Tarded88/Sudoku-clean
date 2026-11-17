@@ -10,9 +10,9 @@ html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font-fa
 body{display:flex;flex-direction:column;align-items:center;padding:10px 4px 20px}
 .top{width:var(--s);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 h1{font-size:20px;font-weight:600;margin:0;letter-spacing:.5px}
-.stats{color:var(--mute);font-size:13px;display:flex;gap:9px;align-items:center}.stats span{white-space:nowrap}
+.stats{color:var(--mute);font-size:14px;display:flex;gap:12px;align-items:center}.stats span{white-space:nowrap}
 .stats b{color:var(--txt);font-weight:600;font-variant-numeric:tabular-nums}
-.ng{width:var(--s);margin-bottom:8px}.ng button{width:100%;padding:10px 0;font-size:15px}
+.ng{width:var(--s);margin-bottom:8px;display:flex;gap:6px}.ng button{padding:10px 0;font-size:15px}#new{flex:1;min-width:0}#stbtn,#setbtn{padding:10px 14px}
 .diff{display:flex;gap:6px;width:var(--s);margin-bottom:12px}
 button{font:inherit;color:var(--txt);background:var(--panel);border:1px solid var(--line);border-radius:8px;cursor:pointer}
 button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
@@ -28,8 +28,9 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .c.sel{background:var(--sel)}
 .c.same{color:#fff;font-weight:700;text-shadow:0 0 8px var(--glow),0 0 18px var(--glow);background:#22395a;box-shadow:inset 0 0 0 1px var(--glow),inset 0 0 14px rgba(124,196,255,.45)}
 .c.bad{color:var(--bad)}
-.c .n{position:absolute;inset:2px;display:grid;grid-template-columns:repeat(3,1fr);font-size:calc(var(--s)/40);color:var(--mute);line-height:1;text-align:center;align-items:center}
-.c .n.on{color:var(--glow)}
+.c .n{position:absolute;inset:2px;display:grid;grid-template-columns:repeat(3,1fr);font-size:calc(var(--s)/34);color:var(--mute);line-height:1;text-align:center;align-items:center}
+.c .n span.on{color:#fff;font-weight:700;text-shadow:0 0 5px var(--glow),0 0 10px var(--glow);background:rgba(124,196,255,.38);border-radius:3px}
+.c.nm{background:#1c2b44}
 #bw{position:relative}#pz{position:absolute;inset:0;background:var(--bg);border:2px solid #4a5675;border-radius:6px;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-size:22px;z-index:3}#pz.show{display:flex}#pz button{padding:10px 26px;background:var(--sel);font-size:16px}
 .pad{width:var(--s);display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:14px;min-height:62px}
 .pad button{height:clamp(56px,9dvh,84px);padding:0;font-size:clamp(22px,4dvh,30px);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
@@ -39,15 +40,14 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .tools{width:var(--s);display:flex;gap:6px;margin-top:10px}
 .tools button{flex:1;height:clamp(46px,6.5dvh,60px);padding:0;font-size:15px;min-width:0}
 .tools button.on{background:var(--sel);border-color:var(--glow)}
-:is(#win,#st,#nm){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
-:is(#win,#st,#nm).show{display:flex}
-:is(#win,#st,#nm)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
-:is(#win,#st,#nm) h2{margin:0 0 6px}:is(#win,#st,#nm) p{color:var(--mute);margin:0 0 16px}
-:is(#win,#st,#nm) button{padding:10px 22px;background:var(--sel)}
+:is(#win,#st,#nm,#set){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
+:is(#win,#st,#nm,#set).show{display:flex}
+:is(#win,#st,#nm,#set)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
+:is(#win,#st,#nm,#set) h2{margin:0 0 6px}:is(#win,#st,#nm,#set) p{color:var(--mute);margin:0 0 16px}
+:is(#win,#st,#nm,#set) button{padding:10px 22px;background:var(--sel)}
 @media(prefers-reduced-motion:no-preference){.c{transition:background .12s}}
 #hx{width:var(--s);margin-top:10px;font-size:14px;line-height:1.45;color:var(--given);background:var(--panel);border-left:3px solid var(--glow);padding:9px 12px;border-radius:6px;display:none}
 #hx:not(:empty){display:block}
-.stats button{padding:3px 10px;font-size:13px}
 #stb table{border-collapse:collapse;margin:0 auto 14px}#stb td,#stb th{padding:6px 7px;font-size:14px;text-align:right;font-variant-numeric:tabular-nums}#stb td:first-child{text-align:left;color:var(--mute)}
 #st button+button{margin-left:8px;background:var(--panel)}
 #st>div{padding:22px 12px}
@@ -56,9 +56,19 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 #nml button small{color:var(--mute);font-size:13px;align-self:center}
 #nml button.on{border-color:var(--glow);background:var(--sel)}
 #nm>div>button{background:var(--panel)}
+#set>div{width:min(92vw,420px);max-height:92dvh;overflow:auto;text-align:left;padding:20px 18px}
+#set h2{text-align:center;margin-bottom:2px}
+#set h3{margin:16px 0 4px;font-size:15px}
+#set p{margin:0 0 8px;font-size:13px;line-height:1.4}
+#set textarea{display:block;width:100%;height:84px;background:var(--cell);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:8px;font:12px/1.35 Consolas,monospace;resize:none;word-break:break-all}
+#set .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+#set .row button{flex:1;padding:10px 8px;min-width:96px}
+#smsg{min-height:20px;margin-top:12px;font-size:13px;color:var(--glow);text-align:center}
+#sclose{display:block;margin:8px auto 0}
+#sver{margin-top:10px;text-align:center;font-size:12px;color:var(--mute)}
 </style></head><body>
-<div class="top"><h1>Sudoku</h1><div class="stats"><button id="stbtn">Stats</button><span>Mistakes <b id="mis">0</b></span><span>Hints <b id="hn">0</b></span><span><b id="tm">0:00</b></span></div></div>
-<div class="ng"><button id="new">New game</button></div>
+<div class="top"><h1>Sudoku</h1><div class="stats"><span>Mistakes <b id="mis">0</b></span><span>Hints <b id="hn">0</b></span><span><b id="tm">0:00</b></span></div></div>
+<div class="ng"><button id="new">New game</button><button id="stbtn">Stats</button><button id="setbtn">Settings</button></div>
 <div id="bw"><div id="board"></div><div id="pz"><span>Paused</span><button id="resume">Resume</button></div></div>
 <div class="pad" id="pad"></div>
 <div class="tools">
@@ -67,6 +77,21 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 <div id="hx" aria-live="polite"></div>
 <div id="nm"><div><h2>New game</h2><div id="nml"></div><button id="nmx">Cancel</button></div></div>
 <div id="st"><div><h2>Statistics</h2><div id="stb"></div><p>Counts solved games only.</p><button id="stx">Close</button><button id="str">Reset stats</button></div></div>
+<div id="set"><div>
+<h2>Settings</h2>
+<h3>Back up statistics</h3>
+<p>Copy or share this code and keep it somewhere safe (notes, email, cloud). Paste it below on any device to restore your statistics.</p>
+<textarea id="sexp" readonly spellcheck="false"></textarea>
+<div class="row"><button id="scopy">Copy</button><button id="sshare">Share</button><button id="ssave">Save file</button></div>
+<h3>Restore statistics</h3>
+<p>Paste a backup code here. This replaces the statistics on this device.</p>
+<textarea id="simp" spellcheck="false" placeholder="Paste backup code here"></textarea>
+<div class="row"><button id="simpb">Import</button><button id="sload">Load file</button></div>
+<input type="file" id="sfile" accept=".txt,text/plain" hidden>
+<div id="smsg" aria-live="polite"></div>
+<button id="sclose">Close</button>
+<div id="sver"></div>
+</div></div>
 <div id="win"><div><h2>Solved!</h2><p id="wmsg"></p><button id="again">Play again</button></div></div>
 <script>
 const $=id=>document.getElementById(id);
@@ -175,10 +200,12 @@ function hint(){
  G.hints++;G.sel=i;place(i,G.sol[i],true)}
 function stats(){try{return JSON.parse(localStorage.getItem('sudoku-stats'))||{}}catch(e){return{}}}
 function rec(){const s=stats(),o=s[G.lv]||{n:0,sum:0,best:0,worst:0};o.n++;o.sum+=G.t;o.best=o.best?Math.min(o.best,G.t):G.t;o.worst=Math.max(o.worst,G.t);s[G.lv]=o;try{localStorage.setItem('sudoku-stats',JSON.stringify(s))}catch(e){}}
-function showStats(){pause(true);const s=stats();let h='<table><tr><th></th>';for(const l in LV)h+='<th>'+l+'</th>';h+='</tr>';
+let stWas=false;
+function showStats(){if(!$('st').classList.contains('show'))stWas=G.paused;pause(true);const s=stats();let h='<table><tr><th></th>';for(const l in LV)h+='<th>'+l+'</th>';h+='</tr>';
  const rows=[['Solved',o=>o.n],['Average',o=>fmt(Math.round(o.sum/o.n))],['Shortest',o=>fmt(o.best)],['Longest',o=>fmt(o.worst)]];
  for(const[n,f]of rows){h+='<tr><td>'+n+'</td>';for(const l in LV){const o=s[l];h+='<td>'+(o&&o.n?f(o):n==='Solved'?0:'–')+'</td>'}h+='</tr>'}
  $('stb').innerHTML=h+'</table>';$('st').classList.add('show')}
+function closeStats(){if($('st').classList.contains('show')){$('st').classList.remove('show');if(!stWas)pause(false)}}
 function pause(p){if(G.done)return;G.paused=p;draw()}
 const fmt=s=>(s/60|0)+':'+String(s%60).padStart(2,'0');
 function draw(){
@@ -189,19 +216,71 @@ function draw(){
   if(i===G.sel)cl+=' sel';
   if(sv&&v===sv)cl+=' same';
   if(v&&v!==G.sol[i])cl+=' bad';
+  if(sv&&!v&&(G.nt[i]>>sv&1))cl+=' nm';
   el.className=cl;
   if(v)el.textContent=v;
-  else if(G.nt[i]){let h='<span class="n">';for(let d=1;d<=9;d++)h+='<span class="'+(sv===d?'on':'')+'">'+(G.nt[i]>>d&1?d:'')+'</span>';el.innerHTML=h+'</span>'}
+  else if(G.nt[i]){let h='<span class="n">';for(let d=1;d<=9;d++)h+='<span class="'+(sv===d&&(G.nt[i]>>d&1)?'on':'')+'">'+(G.nt[i]>>d&1?d:'')+'</span>';el.innerHTML=h+'</span>'}
   else el.textContent=''}
  const cnt=Array(10).fill(0);for(let i=0;i<81;i++)if(G.v[i]&&G.v[i]===G.sol[i])cnt[G.v[i]]++;
  for(const b of $('pad').children){const d=+b.dataset.d;b.classList.toggle('done',cnt[d]>=9);b.classList.toggle('act',sv===d);b.querySelector('small').textContent=9-cnt[d]}
 $('new').textContent='New game · '+G.lv;
   $('mis').textContent=G.mis;$('hn').textContent=G.hints;$('pz').classList.toggle('show',!!G.paused);$('pause').textContent=G.paused?'Resume':'Pause';$('tm').textContent=fmt(G.t);
  $('notes').textContent='Notes: '+(G.note?'on':'off');$('notes').classList.toggle('on',G.note)}
+const BUILD='__BUILD__',PRE='SUDOKU1:';
+const isNative=()=>!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+let _sh=null;
+function sharer(){if(_sh)return _sh;
+ try{const C=window.Capacitor;
+  if(C&&C.Plugins&&C.Plugins.Share)_sh=C.Plugins.Share;
+  else if(C&&C.registerPlugin&&(C.PluginHeaders||[]).some(h=>h.name==='Share'))_sh=C.registerPlugin('Share')}catch(e){}
+ return _sh}
+function encodeBackup(){const o={app:'sudoku',v:1,saved:new Date().toISOString().slice(0,10),stats:stats()};return PRE+btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function decodeBackup(txt){
+ let t=String(txt||'').replace(/\s+/g,'');if(!t)return null;
+ try{if(t.startsWith(PRE))t=decodeURIComponent(escape(atob(t.slice(PRE.length))));
+  const o=JSON.parse(t);if(!o||o.app!=='sudoku'||!o.stats||typeof o.stats!=='object')return null;
+  const out={};
+  for(const l in LV){const x=o.stats[l];if(!x)continue;
+   const n=+x.n,sum=+x.sum,best=+x.best,worst=+x.worst;
+   if([n,sum,best,worst].some(v=>!isFinite(v)||v<0))return null;
+   if(n>0)out[l]={n:Math.floor(n),sum,best,worst}}
+  return out}catch(e){return null}}
+async function copyText(t,ta){
+ try{await navigator.clipboard.writeText(t);return true}catch(e){}
+ try{ta.focus();ta.select();ta.setSelectionRange(0,t.length);return document.execCommand('copy')}catch(e){return false}}
+async function shareText(t){
+ try{const P=sharer();
+  if(P){await P.share({title:'Sudoku statistics backup',text:t,dialogTitle:'Save your backup'});return true}
+  if(navigator.share){await navigator.share({title:'Sudoku statistics backup',text:t});return true}}catch(e){}
+ return false}
+function saveFile(t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));
+ a.download='sudoku-backup-'+new Date().toISOString().slice(0,10)+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+const msg=t=>{$('smsg').textContent=t};
+let setWas=false;
+function openSet(){if(!$('set').classList.contains('show'))setWas=G.paused;pause(true);
+ $('sexp').value=encodeBackup();$('simp').value='';msg('');
+ const nat=isNative();
+ $('sshare').style.display=(sharer()||navigator.share)?'':'none';
+ $('ssave').style.display=nat?'none':'';$('sload').style.display=nat?'none':'';
+ $('sver').textContent='Version: '+(BUILD.startsWith('__')?'development copy':'build '+BUILD);
+ $('set').classList.add('show')}
+function closeSet(){if($('set').classList.contains('show')){$('set').classList.remove('show');if(!setWas)pause(false)}}
+$('setbtn').onclick=openSet;$('sclose').onclick=closeSet;
+$('scopy').onclick=async()=>{const ok=await copyText($('sexp').value,$('sexp'));msg(ok?'Copied. Paste it somewhere safe.':'Could not copy automatically - press and hold the code to copy it by hand.')};
+$('sshare').onclick=async()=>{if(!await shareText($('sexp').value))msg('Sharing was cancelled or is not available - use Copy instead.')};
+$('ssave').onclick=()=>{saveFile($('sexp').value);msg('Backup file saved to your downloads folder.')};
+$('sload').onclick=()=>$('sfile').click();
+$('sfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('simp').value=String(r.result||'').trim();msg('File loaded - press Import.')};r.readAsText(f);e.target.value=''};
+$('simpb').onclick=()=>{const s=decodeBackup($('simp').value);
+ if(!s){msg('That is not a valid backup code.');return}
+ const n=Object.values(s).reduce((a,x)=>a+x.n,0);
+ if(Object.keys(stats()).length&&!confirm('Replace the statistics on this device with the backup ('+n+' solved game'+(n==1?'':'s')+')?'))return;
+ try{localStorage.setItem('sudoku-stats',JSON.stringify(s))}catch(e){msg('Could not save on this device.');return}
+ $('sexp').value=encodeBackup();$('simp').value='';msg('Imported '+n+' solved game'+(n==1?'':'s')+'.')};
 function save(){try{localStorage.setItem('sudoku-save',JSON.stringify(G))}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem('sudoku-save'));if(s&&s.puz&&s.puz.length==81&&!s.done){Object.assign(G,s);return true}}catch(e){}return false}
 $('notes').onclick=()=>{G.note=!G.note;draw()};
-$('stbtn').onclick=showStats;$('stx').onclick=()=>$('st').classList.remove('show');$('str').onclick=()=>{if(confirm('Delete all saved statistics?')){try{localStorage.removeItem('sudoku-stats')}catch(e){}showStats()}};$('pause').onclick=()=>pause(!G.paused);$('resume').onclick=()=>pause(false);$('erase').onclick=erase;$('hint').onclick=hint;
+$('stbtn').onclick=showStats;$('stx').onclick=closeStats;$('str').onclick=()=>{if(confirm('Delete all saved statistics?')){try{localStorage.removeItem('sudoku-stats')}catch(e){}showStats()}};$('pause').onclick=()=>pause(!G.paused);$('resume').onclick=()=>pause(false);$('erase').onclick=erase;$('hint').onclick=hint;
 let wasP=false;
 function openNew(){wasP=G.paused;pause(true);const l=$('nml');l.innerHTML='';
  for(const k in LV){const b=document.createElement('button');b.innerHTML='<span>'+k+'</span><small>'+LV[k]+' numbers</small>';b.className=k===G.lv?'on':'';b.onclick=()=>{$('nm').classList.remove('show');start(k)};l.appendChild(b)}
@@ -209,7 +288,8 @@ function openNew(){wasP=G.paused;pause(true);const l=$('nml');l.innerHTML='';
 function closeNew(){if($('nm').classList.contains('show')){$('nm').classList.remove('show');if(!wasP)pause(false)}}
 $('new').onclick=openNew;$('nmx').onclick=closeNew;$('again').onclick=()=>start(G.lv);
 document.addEventListener('keydown',e=>{
- if(e.key==='Escape'){$('st').classList.remove('show');closeNew()}
+ if(e.key==='Escape'){closeStats();closeNew();closeSet()}
+ if(/^(TEXTAREA|INPUT)$/.test((e.target&&e.target.tagName)||''))return;
  if(e.key.toLowerCase()==='p'){pause(!G.paused);return}
  if(G.paused)return;
  if(e.key>='1'&&e.key<='9')put(+e.key);
@@ -219,7 +299,8 @@ document.addEventListener('keydown',e=>{
   if(e.key=='ArrowUp'&&i>8)i-=9;if(e.key=='ArrowDown'&&i<72)i+=9;
   if(e.key=='ArrowLeft'&&i%9)i--;if(e.key=='ArrowRight'&&i%9<8)i++;G.sel=i;draw()}});
 setInterval(()=>{if(!G.done&&!G.paused&&G.puz.length){G.t++;$('tm').textContent=fmt(G.t);if(G.t%5==0)save()}},1000);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)pause(true)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){pause(true);save()}});
+window.addEventListener('pagehide',save);
 function migrate(){try{if(localStorage.getItem('sudoku-v2'))return;
  const st=stats();if(st.Hard){st.Expert=st.Hard;delete st.Hard;localStorage.setItem('sudoku-stats',JSON.stringify(st))}
  const sv=JSON.parse(localStorage.getItem('sudoku-save'));if(sv&&sv.lv==='Hard'){sv.lv='Expert';localStorage.setItem('sudoku-save',JSON.stringify(sv))}
