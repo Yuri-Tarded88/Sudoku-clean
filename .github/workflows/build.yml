@@ -20,6 +20,9 @@ jobs:
         run: npm install
       - name: Create Android project
         run: npx cap add android
+      - name: Apply the app icon
+        run: |
+          if [ -f icons.zip ]; then unzip -o icons.zip -d android/app/src/main/res; fi
       - name: Copy game into Android project
         run: npx cap sync android
       - name: Set version number and fixed signing key
