@@ -21,12 +21,13 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 #board{width:var(--s);height:var(--s);display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-template-rows:repeat(9,minmax(0,1fr));border:2px solid #4a5675;border-radius:6px;overflow:hidden;background:var(--line);gap:1px}
 .c{position:relative;background:var(--cell);border:0;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--s)/15);color:var(--txt);padding:0;min-width:0;min-height:0;overflow:hidden;line-height:1;contain:layout paint style}
 .c.given{color:var(--given);font-weight:600}
-.c.r2,.c.r5{box-shadow:0 1px 0 #4a5675}
-.c.k2,.c.k5{box-shadow:1px 0 0 #4a5675}
-.c.r2.k2,.c.r2.k5,.c.r5.k2,.c.r5.k5{box-shadow:1px 1px 0 #4a5675}
+.c{box-shadow:var(--ln,0 0 #0000)}
+.c.r2,.c.r5{--ln:0 1px 0 #4a5675}
+.c.k2,.c.k5{--ln:1px 0 0 #4a5675}
+.c.r2.k2,.c.r2.k5,.c.r5.k2,.c.r5.k5{--ln:1px 1px 0 #4a5675}
 .c.hl{background:var(--hl)}
 .c.sel{background:var(--sel)}
-.c.same{color:#fff;font-weight:700;text-shadow:0 0 8px var(--glow),0 0 18px var(--glow);background:#22395a;box-shadow:inset 0 0 0 1px var(--glow),inset 0 0 14px rgba(124,196,255,.45)}
+.c.same{color:#fff;font-weight:700;text-shadow:0 0 8px var(--glow),0 0 18px var(--glow);background:#22395a;box-shadow:inset 0 0 0 1px var(--glow),inset 0 0 14px rgba(124,196,255,.45),var(--ln,0 0 #0000)}
 .c.bad{color:var(--bad)}
 .c .n{position:absolute;inset:2px;display:grid;grid-template-columns:repeat(3,1fr);font-size:calc(var(--s)/34);color:var(--mute);line-height:1;text-align:center;align-items:center}
 .c .n span.on{color:#fff;font-weight:700;text-shadow:0 0 5px var(--glow),0 0 10px var(--glow);background:rgba(124,196,255,.38);border-radius:3px}
@@ -227,7 +228,7 @@ function place(i,d,hint){
 function put(d){
  if(G.done||G.paused)return;
  const i=G.sel;
- if(i<0||isLocked(i)){G.hd=G.hd===d?0:d;draw();return}
+ if(i<0||isLocked(i)){G.hd=G.hd===d?0:d;G.sel=-1;draw();return}
  if(G.note){if(G.v[i])return;snap(i);G.nt[i]^=1<<d;draw();save();return}
  place(i,d,false)}
 function erase(){const i=G.sel;if(i<0||G.puz[i]||G.done||G.paused)return;
@@ -353,12 +354,8 @@ function draw(){
  $('undo').disabled=!G.hist.length||G.done}
 const BUILD='__BUILD__',PRE='SUDOKU1:';
 const isNative=()=>!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
-let _sh=null;
-function sharer(){if(_sh)return _sh;
- try{const C=window.Capacitor;
-  if(C&&C.Plugins&&C.Plugins.Share)_sh=C.Plugins.Share;
-  else if(C&&C.registerPlugin&&(C.PluginHeaders||[]).some(h=>h.name==='Share'))_sh=C.registerPlugin('Share')}catch(e){}
- return _sh}
+function nativeHas(n){const C=window.Capacitor;return!!(C&&C.nativePromise&&C.isNativePlatform&&C.isNativePlatform()&&(C.PluginHeaders||[]).some(h=>h.name===n))}
+function sharer(){return nativeHas('Share')?{share:o=>Capacitor.nativePromise('Share','share',o)}:null}
 function encodeBackup(){const o={app:'sudoku',v:3,saved:new Date().toISOString().slice(0,10),stats:stats(),daily:dailyData(),h:histGet(),x:extraGet()};return PRE+btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
 function decodeBackup(txt){
  let t=String(txt||'').replace(/\s+/g,'');if(!t)return null;
@@ -455,9 +452,12 @@ function backAction(){
  const now=Date.now();
  if(now-lastBack<2000){save();try{BACKAPP.exitApp()}catch(e){}}
  else{lastBack=now;toast('Press back again to exit')}}
+let backTries=0;
 function initBack(){try{const C=window.Capacitor;
- if(!C||!C.registerPlugin||!(C.PluginHeaders||[]).some(h=>h.name==='App'))return;
- BACKAPP=C.registerPlugin('App');BACKAPP.addListener('backButton',backAction)}catch(e){}}
+ if(C&&C.addListener&&C.nativePromise&&C.isNativePlatform&&C.isNativePlatform()){
+  BACKAPP={exitApp:()=>C.nativePromise('App','exitApp')};
+  C.addListener('App','backButton',(d,err)=>{if(!err)backAction()});return}
+ if(window.androidBridge&&backTries++<20)setTimeout(initBack,250)}catch(e){}}
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape'){closeStats();closeNew();closeSet()}
  if(/^(TEXTAREA|INPUT)$/.test((e.target&&e.target.tagName)||''))return;
