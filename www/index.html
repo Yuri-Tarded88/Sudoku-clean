@@ -41,17 +41,17 @@ button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .tools button{flex:1;height:clamp(46px,6.5dvh,60px);padding:0;font-size:14px;min-width:0}
 .tools button:disabled{opacity:.4;cursor:default}
 .tools button.on{background:var(--sel);border-color:var(--glow)}
-:is(#win,#st,#nm,#set){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
-:is(#win,#st,#nm,#set).show{display:flex}
-:is(#win,#st,#nm,#set)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
-:is(#win,#st,#nm,#set) h2{margin:0 0 6px}:is(#win,#st,#nm,#set) p{color:var(--mute);margin:0 0 16px}
-:is(#win,#st,#nm,#set) button{padding:10px 22px;background:var(--sel)}
+:is(#win,#st,#nm,#set,#over){position:fixed;inset:0;background:rgba(5,7,12,.82);display:none;align-items:center;justify-content:center;z-index:5}
+:is(#win,#st,#nm,#set,#over).show{display:flex}
+:is(#win,#st,#nm,#set,#over)>div{background:var(--panel);border:1px solid var(--glow);border-radius:14px;padding:28px 34px;text-align:center;box-shadow:0 0 30px rgba(124,196,255,.35)}
+:is(#win,#st,#nm,#set,#over) h2{margin:0 0 6px}:is(#win,#st,#nm,#set,#over) p{color:var(--mute);margin:0 0 16px}
+:is(#win,#st,#nm,#set,#over) button{padding:10px 22px;background:var(--sel)}
 button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #hx{width:var(--s);margin-top:10px;font-size:14px;line-height:1.45;color:var(--given);background:var(--panel);border-left:3px solid var(--glow);padding:9px 12px;border-radius:6px;display:none}
 #hx:not(:empty){display:block}
 #stb table{border-collapse:collapse;margin:0 auto 14px}#stb td,#stb th{padding:6px 7px;font-size:14px;text-align:right;font-variant-numeric:tabular-nums}#stb td:first-child{text-align:left;color:var(--mute)}
 #st button+button{margin-left:8px;background:var(--panel)}
-#st>div{padding:22px 12px}
+#st>div{padding:20px 12px;width:min(94vw,440px);max-height:92dvh;overflow:auto}
 #nml{display:grid;gap:8px;margin-bottom:12px;min-width:240px}
 #nml button{padding:13px 16px;font-size:17px;display:flex;justify-content:space-between;background:var(--cell)}
 #nml button small{color:var(--mute);font-size:13px;align-self:center}
@@ -70,6 +70,29 @@ button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #smsg{min-height:20px;margin-top:12px;font-size:13px;color:var(--glow);text-align:center}
 #sclose{display:block;margin:8px auto 0}
 #sver{margin-top:10px;text-align:center;font-size:12px;color:var(--mute)}
+#stb .tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 12px;text-align:left}
+#stb .tile{background:var(--cell);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+#stb .tile b{display:block;font-size:17px;font-weight:600}#stb .tile span{font-size:12px;color:var(--mute)}
+#stb h3{margin:12px 0 6px;font-size:14px;text-align:left}
+#stb .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+#stb .chips button{padding:4px 10px;font-size:13px;background:var(--cell)}#stb .chips button.on{border-color:var(--glow);background:var(--sel)}
+#stb .chart{display:block;width:100%;height:84px;margin:4px 0}
+#stb .chart rect{fill:var(--sel)}#stb .chart rect.best{fill:#4a7fc0}#stb .chart rect.last{fill:var(--glow)}
+#stb .chart line{stroke:var(--mute);stroke-dasharray:4 3;stroke-width:1;vector-effect:non-scaling-stroke}
+#stb p.cap{margin:2px 0 4px;font-size:13px;color:var(--mute)}#stb p.cap b{color:var(--txt)}
+#stb .recent{font-size:13px;text-align:left;margin:0 0 8px}
+#stb .recent div{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)}
+#stb .recent span:last-child{color:var(--mute);text-align:right}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.opt span{font-size:15px}.opt small{display:block;color:var(--mute);font-size:12px;margin-top:2px;line-height:1.3}
+.opt input{-webkit-appearance:none;appearance:none;flex:none;width:46px;height:26px;border-radius:13px;background:var(--line);position:relative;margin:0;cursor:pointer;transition:background .15s}
+.opt input::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#cfd6e6;transition:left .15s}
+.opt input:checked{background:#2f7fd0}.opt input:checked::after{left:23px;background:#fff}
+.opt.dis{opacity:.45}
+#supd{margin-top:6px;text-align:center;font-size:13px;min-height:18px;color:var(--mute)}#supd a{color:var(--glow)}
+.btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.btns button+button{background:var(--panel)}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222a3d;color:var(--txt);padding:10px 16px;border-radius:20px;font-size:14px;border:1px solid var(--line);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;white-space:nowrap}
+#toast.show{opacity:1}
 </style></head><body>
 <div class="top"><h1>Sudoku</h1><div class="stats"><span>Mistakes <b id="mis">0</b></span><span>Hints <b id="hn">0</b></span><span><b id="tm">0:00</b></span></div></div>
 <div class="ng"><button id="new">New game</button><button id="stbtn">Stats</button><button id="setbtn">Settings</button></div>
@@ -83,6 +106,9 @@ button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 <div id="st"><div><h2>Statistics</h2><div id="stb"></div><p>Counts solved games only.</p><button id="stx">Close</button><button id="str">Reset stats</button></div></div>
 <div id="set"><div>
 <h2>Settings</h2>
+<h3>Game options</h3>
+<label class="opt"><span>Instant error checking<small>Wrong numbers turn red and count as mistakes. Turn off for a pure challenge.</small></span><input type="checkbox" id="ocheck"></label>
+<label class="opt" id="olabel"><span>3-mistake limit<small>The game ends after 3 mistakes (needs error checking).</small></span><input type="checkbox" id="olimit"></label>
 <h3>Back up statistics</h3>
 <p>Copy or share this code and keep it somewhere safe (notes, email, cloud). Paste it below on any device to restore your statistics.</p>
 <textarea id="sexp" readonly spellcheck="false"></textarea>
@@ -95,7 +121,10 @@ button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 <div id="smsg" aria-live="polite"></div>
 <button id="sclose">Close</button>
 <div id="sver"></div>
+<div id="supd"></div>
 </div></div>
+<div id="over"><div><h2>Game over</h2><p>You made 3 mistakes.</p><div class="btns"><button id="retry">Retry this puzzle</button><button id="overnew">New game</button></div></div></div>
+<div id="toast"></div>
 <div id="win"><div><h2>Solved!</h2><p id="wmsg"></p><button id="again">Play again</button></div></div>
 <script>
 const $=id=>document.getElementById(id);
@@ -104,7 +133,11 @@ const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=rnd()*(i+1)|0;[a[i],a[j]]=[
 function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 function mulberry(a){return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const LV={Easy:45,Normal:33,Hard:31,Expert:29,DSC:25};
-let G={lv:'Easy',puz:[],sol:[],v:[],nt:[],sel:-1,note:false,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0,date:''};
+const REPO='Yuri-Tarded88/Sudoku-clean';
+let S={check:true,limit:false};
+function loadS(){try{Object.assign(S,JSON.parse(localStorage.getItem('sudoku-settings'))||{})}catch(e){}}
+function saveS(){try{localStorage.setItem('sudoku-settings',JSON.stringify(S))}catch(e){}}
+let G={lv:'Easy',over:false,puz:[],sol:[],v:[],nt:[],sel:-1,note:false,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0,date:''};
 const peers=i=>{const r=i/9|0,c=i%9,b=(r/3|0)*3+(c/3|0);return j=>{const r2=j/9|0,c2=j%9;return r2==r||c2==c||((r2/3|0)*3+(c2/3|0))==b}};
 function cands(g,i){let m=0x3fe;const r=i/9|0,c=i%9,br=r-r%3,bc=c-c%3;
  for(let k=0;k<9;k++){m&=~(1<<g[r*9+k]);m&=~(1<<g[k*9+c]);m&=~(1<<g[(br+(k/3|0))*9+bc+k%3])}return m}
@@ -166,35 +199,41 @@ function build(){_cl=[];_ct=[];
  for(let d=1;d<=9;d++){const b=document.createElement('button');b.dataset.d=d;b.innerHTML=d+'<small></small>';fast(b,()=>put(d));ps.appendChild(b)}
 }
 function start(lv){
- G.lv=lv;$('win').classList.remove('show');$('hx').textContent='';
+ G.lv=lv;$('win').classList.remove('show');$('over').classList.remove('show');$('hx').textContent='';
  document.body.style.cursor='progress';
  setTimeout(()=>{const{puz,sol}=generate(LV[lv],lv!=='Easy'&&lv!=='DSC');
-  Object.assign(G,{puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0,date:''});
+  Object.assign(G,{puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,over:false,hints:0,paused:false,hist:[],hd:0,date:''});
   document.body.style.cursor='';save();draw()},20)}
 function snap(i){G.hist.push({v:G.v.slice(),nt:G.nt.slice(),i});if(G.hist.length>120)G.hist.shift()}
 function undo(){if(G.done||G.paused||!G.hist.length)return;const h=G.hist.pop();G.v=h.v;G.nt=h.nt;G.sel=h.i;G.hd=0;$('hx').textContent='';draw();save()}
 function onWin(){let extra='';
- if(G.lv==='Daily'){if(recDaily()){const n=dailyStreak();extra=' Daily streak: '+n+' day'+(n==1?'':'s')+'.'}else extra=' (Already counted for this date.)'}
- else rec();
+ if(G.lv==='Daily'){if(recDaily()){logSolve('Daily',G.date);const n=dailyStreak();extra=' Daily streak: '+n+' day'+(n==1?'':'s')+'.'}else extra=' (Already counted for this date.)'}
+ else{rec();logSolve(G.lv,dateKey())}
  $('wmsg').textContent=(G.lv==='Daily'?'Daily puzzle':G.lv)+' in '+fmt(G.t)+' with '+G.mis+' mistake'+(G.mis==1?'':'s')+' and '+G.hints+' hint'+(G.hints==1?'':'s')+'.'+extra;
  $('win').classList.add('show')}
+function gameOver(){G.done=true;G.over=true;$('over').classList.add('show')}
+function retry(){$('over').classList.remove('show');Object.assign(G,{v:G.puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,over:false,hints:0,paused:false,hist:[],hd:0});$('hx').textContent='';save();draw()}
+const isLocked=i=>!!(G.puz[i]||(S.check&&G.v[i]&&G.v[i]===G.sol[i]));
 function place(i,d,hint){
  snap(i);G.hd=0;
  if(!hint)$('hx').textContent='';
  G.v[i]=d;G.nt[i]=0;
- if(d!==G.sol[i]){if(!hint)G.mis++}
+ if(d!==G.sol[i]&&S.check){if(!hint)G.mis++}
  else{const p=peers(i);for(let j=0;j<81;j++)if(p(j))G.nt[j]&=~(1<<d)}
  if(G.v.every((x,j)=>x===G.sol[j])){G.done=true;onWin()}
+ else if(S.check&&S.limit&&G.mis>=3)gameOver();
+ else if(!S.check&&G.v.every(x=>x))$('hx').textContent='The board is full, but at least one number is wrong. Check each row, column and box.';
  draw();save()}
 function put(d){
  if(G.done||G.paused)return;
- const i=G.sel,locked=i<0||G.puz[i]||G.v[i]===G.sol[i];
- if(locked){G.hd=G.hd===d?0:d;draw();return}
+ const i=G.sel;
+ if(i<0||isLocked(i)){G.hd=G.hd===d?0:d;draw();return}
  if(G.note){if(G.v[i])return;snap(i);G.nt[i]^=1<<d;draw();save();return}
  place(i,d,false)}
 function erase(){const i=G.sel;if(i<0||G.puz[i]||G.done||G.paused)return;
- if(!((G.v[i]&&G.v[i]!==G.sol[i])||G.nt[i]))return;
- snap(i);if(G.v[i]!==G.sol[i])G.v[i]=0;G.nt[i]=0;draw();save()}
+ const rm=G.v[i]&&!(S.check&&G.v[i]===G.sol[i]);
+ if(!(rm||G.nt[i]))return;
+ snap(i);if(rm)G.v[i]=0;G.nt[i]=0;draw();save()}
 const BN=['top-left','top-middle','top-right','middle-left','center','middle-right','bottom-left','bottom-middle','bottom-right'];
 const lab=(t,k)=>t==0?'row '+(k+1):t==1?'column '+(k+1):'the '+BN[k]+' box';
 function smart(g){
@@ -224,6 +263,15 @@ function hint(){
  G.hints++;G.sel=i;place(i,G.sol[i],true)}
 function stats(){try{return JSON.parse(localStorage.getItem('sudoku-stats'))||{}}catch(e){return{}}}
 function rec(){const s=stats(),o=s[G.lv]||{n:0,sum:0,best:0,worst:0};o.n++;o.sum+=G.t;o.best=o.best?Math.min(o.best,G.t):G.t;o.worst=Math.max(o.worst,G.t);s[G.lv]=o;try{localStorage.setItem('sudoku-stats',JSON.stringify(s))}catch(e){}}
+const LVS=['Easy','Normal','Hard','Expert','DSC','Daily'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const lget=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const histGet=()=>lget('sudoku-hist',[]),extraGet=()=>lget('sudoku-extra',{});
+function logSolve(lv,date){
+ const h=histGet();h.push([+date.replace(/-/g,''),LVS.indexOf(lv),G.t,G.mis,G.hints]);while(h.length>100)h.shift();
+ const x=extraGet();x.time=(x.time||0)+G.t;
+ if(G.mis===0&&G.hints===0){x.fl=(x.fl||0)+1;x.fs=(x.fs||0)+1;x.fb=Math.max(x.fb||0,x.fs)}else x.fs=0;
+ try{localStorage.setItem('sudoku-hist',JSON.stringify(h));localStorage.setItem('sudoku-extra',JSON.stringify(x))}catch(e){}}
 const DK='sudoku-daily',DG='sudoku-daily-game';
 const pad2=n=>String(n).padStart(2,'0');
 const dateKey=(d=new Date())=>d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
@@ -242,13 +290,37 @@ function startDaily(){
  if(G.lv==='Daily'&&G.date===k&&!G.done&&G.puz.length){G.paused=false;draw();return}
  let s=null;try{s=JSON.parse(localStorage.getItem(DG))}catch(e){}
  if(s&&s.lv==='Daily'&&s.date===k&&s.puz&&s.puz.length===81&&!s.done)Object.assign(G,s,{paused:false,sel:-1,hist:[],hd:0});
- else{const{puz,sol}=makeDaily(k);Object.assign(G,{lv:'Daily',date:k,puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,hints:0,paused:false,hist:[],hd:0})}
- save();draw()}
-let stWas=false;
-function showStats(){if(!$('st').classList.contains('show'))stWas=G.paused;pause(true);const s=stats();let h='<table><tr><th></th>';for(const l in LV)h+='<th>'+l+'</th>';h+='</tr>';
- const rows=[['Solved',o=>o.n],['Average',o=>fmt(Math.round(o.sum/o.n))],['Shortest',o=>fmt(o.best)],['Longest',o=>fmt(o.worst)]];
- for(const[n,f]of rows){h+='<tr><td>'+n+'</td>';for(const l in LV){const o=s[l];h+='<td>'+(o&&o.n?f(o):n==='Solved'?0:'–')+'</td>'}h+='</tr>'}
- const dd=dailyData();$('stb').innerHTML=h+'</table><p class="dl">Daily puzzle: streak <b>'+dailyStreak()+'</b> · best <b>'+(dd.best||0)+'</b> · solved <b>'+(dd.solved||0)+'</b></p>';$('st').classList.add('show')}
+ else{const{puz,sol}=makeDaily(k);Object.assign(G,{lv:'Daily',date:k,puz,sol,v:puz.slice(),nt:Array(81).fill(0),sel:-1,mis:0,t:0,done:false,over:false,hints:0,paused:false,hist:[],hd:0})}
+ $('over').classList.remove('show');save();draw()}
+let stWas=false,chartLv=null;
+const fmtLong=s=>{const h=s/3600|0,m=Math.round(s%3600/60);return h?h+'h '+m+'m':m+'m'};
+const tile=(v,l)=>'<div class="tile"><b>'+v+'</b><span>'+l+'</span></div>';
+function chart(ts){
+ const n=ts.length;if(n<2)return '<p class="cap">Solve one more game on this level to see the chart.</p>';
+ const mx=Math.max(...ts),mn=Math.min(...ts),avg=ts.reduce((a,b)=>a+b,0)/n,W=300,H=84,bw=W/n;let b='';
+ ts.forEach((t,i)=>{const hh=Math.max(3,t/mx*(H-12));b+='<rect x="'+(i*bw+2).toFixed(1)+'" y="'+(H-hh).toFixed(1)+'" width="'+(bw-4).toFixed(1)+'" height="'+hh.toFixed(1)+'" rx="2" class="'+(i===n-1?'last':t===mn?'best':'')+'"/>'});
+ const ay=(H-avg/mx*(H-12)).toFixed(1);
+ return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+b+'<line x1="0" x2="'+W+'" y1="'+ay+'" y2="'+ay+'"/></svg><p class="cap">Best <b>'+fmt(mn)+'</b> · Average <b>'+fmt(Math.round(avg))+'</b> · Latest <b>'+fmt(ts[n-1])+'</b></p>'}
+function renderStats(){
+ const s=stats(),h=histGet(),x=extraGet(),dd=dailyData();
+ const total=Object.values(s).reduce((a,o)=>a+o.n,0)+(dd.solved||0);
+ let o='<div class="tiles">'+tile(total,'Games solved')+tile(fmtLong(x.time||0),'Time solving')+tile(x.fl||0,'Flawless solves')+tile((x.fs||0)+' <small>(best '+(x.fb||0)+')</small>','Flawless streak')+tile(dailyStreak()+' <small>(best '+(dd.best||0)+')</small>','Daily streak')+tile(dd.solved||0,'Dailies solved')+'</div>';
+ o+='<table><tr><th></th>';for(const l in LV)o+='<th>'+l+'</th>';o+='</tr>';
+ const rows=[['Solved',q=>q.n],['Average',q=>fmt(Math.round(q.sum/q.n))],['Shortest',q=>fmt(q.best)],['Longest',q=>fmt(q.worst)]];
+ for(const[n,f]of rows){o+='<tr><td>'+n+'</td>';for(const l in LV){const q=s[l];o+='<td>'+(q&&q.n?f(q):n==='Solved'?0:'–')+'</td>'}o+='</tr>'}
+ o+='</table>';
+ const have=LVS.filter((l,i)=>h.some(e=>e[1]===i));
+ if(!have.includes(chartLv))chartLv=have.length?(h.length&&have.includes(LVS[h[h.length-1][1]])?LVS[h[h.length-1][1]]:have[0]):null;
+ o+='<h3>Solve times</h3>';
+ if(!have.length)o+='<p class="cap">Your next solved games will appear here.</p>';
+ else{o+='<div class="chips">'+have.map(l=>'<button data-l="'+l+'" class="'+(l===chartLv?'on':'')+'">'+l+'</button>').join('')+'</div>';
+  o+=chart(h.filter(e=>e[1]===LVS.indexOf(chartLv)).slice(-15).map(e=>e[2]))}
+ o+='<h3>Recent games</h3>';
+ if(!h.length)o+='<p class="cap">No games recorded yet.</p>';
+ else{o+='<div class="recent">'+h.slice(-10).reverse().map(e=>{const d=String(e[0]);return '<div><span>'+(+d.slice(6,8))+' '+MON[+d.slice(4,6)-1]+' · '+LVS[e[1]]+'</span><span>'+fmt(e[2])+' · '+e[3]+' mistake'+(e[3]==1?'':'s')+' · '+e[4]+' hint'+(e[4]==1?'':'s')+'</span></div>'}).join('')+'</div>';
+  const l=h.slice(-20);o+='<p class="cap">Last '+l.length+' games: <b>'+(l.reduce((a,e)=>a+e[3],0)/l.length).toFixed(1)+'</b> mistakes and <b>'+(l.reduce((a,e)=>a+e[4],0)/l.length).toFixed(1)+'</b> hints per game.</p>'}
+ const b=$('stb');b.innerHTML=o;b.querySelectorAll('.chips button').forEach(c=>c.onclick=()=>{chartLv=c.dataset.l;renderStats()})}
+function showStats(){if(!$('st').classList.contains('show'))stWas=G.paused;pause(true);renderStats();$('st').classList.add('show')}
 function closeStats(){if($('st').classList.contains('show')){$('st').classList.remove('show');if(!stWas)pause(false)}}
 function pause(p){if(G.done)return;G.paused=p;draw()}
 const fmt=s=>(s/60|0)+':'+String(s%60).padStart(2,'0');
@@ -262,7 +334,7 @@ function draw(){
   if(p&&p(i))cl+=' hl';
   if(i===G.sel)cl+=' sel';
   if(sv&&v===sv)cl+=' same';
-  if(v&&v!==G.sol[i])cl+=' bad';
+  if(S.check&&v&&v!==G.sol[i])cl+=' bad';
   if(sv&&!v&&(n>>sv&1))cl+=' nm';
   const el=cs[i];
   if(_cl[i]!==cl){el.className=cl;_cl[i]=cl}
@@ -272,10 +344,10 @@ function draw(){
    else if(n){let h='<span class="n">';for(let d=1;d<=9;d++)h+='<span class="'+(sv===d&&(n>>d&1)?'on':'')+'">'+(n>>d&1?d:'')+'</span>';el.innerHTML=h+'</span>'}
    else el.textContent='';
    _ct[i]=ck}}
- const cnt=Array(10).fill(0);for(let i=0;i<81;i++)if(G.v[i]&&G.v[i]===G.sol[i])cnt[G.v[i]]++;
+ const cnt=Array(10).fill(0);for(let i=0;i<81;i++)if(G.v[i]&&(!S.check||G.v[i]===G.sol[i]))cnt[G.v[i]]++;
  for(const b of $('pad').children){const d=+b.dataset.d,left=9-cnt[d];b.classList.toggle('done',cnt[d]>=9);b.classList.toggle('act',sv===d);if(b._t!==left){b.querySelector('small').textContent=left;b._t=left}}
  setTxt($('new'),'New game · '+G.lv);
- setTxt($('mis'),String(G.mis));setTxt($('hn'),String(G.hints));setTxt($('tm'),fmt(G.t));
+ setTxt($('mis'),S.check?(S.limit?G.mis+'/3':String(G.mis)):'–');setTxt($('hn'),String(G.hints));setTxt($('tm'),fmt(G.t));
  $('pz').classList.toggle('show',!!G.paused);setTxt($('pause'),G.paused?'Resume':'Pause');
  setTxt($('notes'),G.note?'Notes ON':'Notes');$('notes').classList.toggle('on',G.note);
  $('undo').disabled=!G.hist.length||G.done}
@@ -287,7 +359,7 @@ function sharer(){if(_sh)return _sh;
   if(C&&C.Plugins&&C.Plugins.Share)_sh=C.Plugins.Share;
   else if(C&&C.registerPlugin&&(C.PluginHeaders||[]).some(h=>h.name==='Share'))_sh=C.registerPlugin('Share')}catch(e){}
  return _sh}
-function encodeBackup(){const o={app:'sudoku',v:2,saved:new Date().toISOString().slice(0,10),stats:stats(),daily:dailyData()};return PRE+btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function encodeBackup(){const o={app:'sudoku',v:3,saved:new Date().toISOString().slice(0,10),stats:stats(),daily:dailyData(),h:histGet(),x:extraGet()};return PRE+btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
 function decodeBackup(txt){
  let t=String(txt||'').replace(/\s+/g,'');if(!t)return null;
  try{if(t.startsWith(PRE))t=decodeURIComponent(escape(atob(t.slice(PRE.length))));
@@ -305,7 +377,12 @@ function decodeBackup(txt){
    const hist={};
    for(const k of Object.keys(d.hist||{}).sort().slice(-30)){const e=d.hist[k];if(!okd.test(k)||!e||!num(e.t)||!num(e.m)||!num(e.h))return null;hist[k]={t:+e.t,m:+e.m,h:+e.h}}
    dOut={streak:Math.floor(d.streak||0),best:Math.floor(d.best||0),solved:Math.floor(d.solved||0),last:d.last||'',hist}}
-  return{stats:out,daily:dOut}}catch(e){return null}}
+  let hOut=null,xOut=null;
+  if(Array.isArray(o.h)){hOut=[];for(const e of o.h.slice(-100)){
+   if(!Array.isArray(e)||e.length!==5||!e.every(v=>isFinite(+v)&&+v>=0))return null;
+   const dt=+e[0],li=+e[1];if(dt<20000101||dt>29991231||li>5||li%1)return null;hOut.push(e.map(Number))}}
+  if(o.x&&typeof o.x==='object'){xOut={};for(const k of['time','fl','fs','fb']){if(o.x[k]===undefined)continue;if(!isFinite(+o.x[k])||+o.x[k]<0)return null;xOut[k]=+o.x[k]}}
+  return{stats:out,daily:dOut,h:hOut,x:xOut}}catch(e){return null}}
 async function copyText(t,ta){
  try{await navigator.clipboard.writeText(t);return true}catch(e){}
  try{ta.focus();ta.select();ta.setSelectionRange(0,t.length);return document.execCommand('copy')}catch(e){return false}}
@@ -324,7 +401,15 @@ function openSet(){if(!$('set').classList.contains('show'))setWas=G.paused;pause
  $('sshare').style.display=(sharer()||navigator.share)?'':'none';
  $('ssave').style.display=nat?'none':'';$('sload').style.display=nat?'none':'';
  $('sver').textContent='Version: '+(BUILD.startsWith('__')?'development copy':'build '+BUILD);
+ syncOpts();checkUpdate();
  $('set').classList.add('show')}
+function syncOpts(){$('ocheck').checked=S.check;$('olimit').checked=S.limit&&S.check;$('olimit').disabled=!S.check;$('olabel').classList.toggle('dis',!S.check)}
+$('ocheck').onchange=e=>{S.check=e.target.checked;saveS();syncOpts();draw()};
+$('olimit').onchange=e=>{S.limit=e.target.checked;saveS();syncOpts();draw()};
+async function checkUpdate(){const el=$('supd');el.textContent='';if(BUILD.startsWith('__')||!navigator.onLine)return;
+ try{const r=await fetch('https://api.github.com/repos/'+REPO+'/releases/latest',{headers:{Accept:'application/vnd.github+json'}});if(!r.ok)return;
+  const m=/build-(\d+)/.exec((await r.json()).tag_name||'');if(!m)return;
+  el.innerHTML=+m[1]>+BUILD?'<a href="https://github.com/'+REPO+'/releases/latest" target="_blank" rel="noopener">Update available: build '+(+m[1])+' - tap to download</a>':'You have the latest version.'}catch(e){}}
 function closeSet(){if($('set').classList.contains('show')){$('set').classList.remove('show');if(!setWas)pause(false)}}
 $('setbtn').onclick=openSet;$('sclose').onclick=closeSet;
 $('scopy').onclick=async()=>{const ok=await copyText($('sexp').value,$('sexp'));msg(ok?'Copied. Paste it somewhere safe.':'Could not copy automatically - press and hold the code to copy it by hand.')};
@@ -337,12 +422,12 @@ $('simpb').onclick=()=>{const r=decodeBackup($('simp').value);
  const n=Object.values(r.stats).reduce((a,x)=>a+x.n,0)+(r.daily?r.daily.solved:0);
  const have=Object.keys(stats()).length||(dailyData().solved||0);
  if(have&&!confirm('Replace the statistics on this device with the backup ('+n+' solved game'+(n==1?'':'s')+')?'))return;
- try{localStorage.setItem('sudoku-stats',JSON.stringify(r.stats));if(r.daily)localStorage.setItem(DK,JSON.stringify(r.daily))}catch(e){msg('Could not save on this device.');return}
+ try{localStorage.setItem('sudoku-stats',JSON.stringify(r.stats));if(r.daily)localStorage.setItem(DK,JSON.stringify(r.daily));if(r.h)localStorage.setItem('sudoku-hist',JSON.stringify(r.h));if(r.x)localStorage.setItem('sudoku-extra',JSON.stringify(r.x))}catch(e){msg('Could not save on this device.');return}
  $('sexp').value=encodeBackup();$('simp').value='';msg('Imported '+n+' solved game'+(n==1?'':'s')+'.')};
 function save(){try{const j=JSON.stringify(G,(k,v)=>k==='hist'||k==='hd'?undefined:v);localStorage.setItem('sudoku-save',j);if(G.lv==='Daily')localStorage.setItem(DG,j)}catch(e){}}
-function load(){try{const s=JSON.parse(localStorage.getItem('sudoku-save'));if(s&&s.puz&&s.puz.length==81&&!s.done){Object.assign(G,s);return true}}catch(e){}return false}
+function load(){try{const s=JSON.parse(localStorage.getItem('sudoku-save'));if(s&&s.puz&&s.puz.length==81){if(s.done){if(LV[s.lv])G.lv=s.lv;return false}Object.assign(G,s);return true}}catch(e){}return false}
 $('notes').onclick=()=>{G.note=!G.note;draw()};
-$('stbtn').onclick=showStats;$('stx').onclick=closeStats;$('str').onclick=()=>{if(confirm('Delete all saved statistics?')){try{localStorage.removeItem('sudoku-stats')}catch(e){}showStats()}};$('pause').onclick=()=>pause(!G.paused);$('resume').onclick=()=>pause(false);$('erase').onclick=erase;$('hint').onclick=hint;
+$('stbtn').onclick=showStats;$('stx').onclick=closeStats;$('str').onclick=()=>{if(confirm('Delete ALL statistics, including your daily streak and game history?')){try{['sudoku-stats','sudoku-hist','sudoku-extra',DK,DG].forEach(k=>localStorage.removeItem(k))}catch(e){}renderStats()}};$('pause').onclick=()=>pause(!G.paused);$('resume').onclick=()=>pause(false);$('erase').onclick=erase;$('hint').onclick=hint;
 let wasP=false;
 function openNew(){wasP=G.paused;pause(true);const l=$('nml');l.innerHTML='';
  {const k=dateKey(),o=dailyData(),done=!!(o.hist&&o.hist[k]),n=dailyStreak();
@@ -355,6 +440,24 @@ function openNew(){wasP=G.paused;pause(true);const l=$('nml');l.innerHTML='';
 function closeNew(){if($('nm').classList.contains('show')){$('nm').classList.remove('show');if(!wasP)pause(false)}}
 $('new').onclick=openNew;$('nmx').onclick=closeNew;$('again').onclick=()=>{$('win').classList.remove('show');if(G.lv==='Daily')openNew();else start(G.lv)};
 $('undo').onclick=undo;
+$('retry').onclick=retry;$('overnew').onclick=()=>{$('over').classList.remove('show');openNew()};
+let lastBack=0,BACKAPP=null,toastT=0;
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),1900)}
+function backAction(){
+ const open=id=>$(id).classList.contains('show');
+ if(open('nm')){closeNew();return}
+ if(open('st')){closeStats();return}
+ if(open('set')){closeSet();return}
+ if(open('over')){$('over').classList.remove('show');return}
+ if(open('win')){$('win').classList.remove('show');return}
+ if(G.paused){pause(false);return}
+ if(G.hd||G.sel>=0){G.hd=0;G.sel=-1;draw();return}
+ const now=Date.now();
+ if(now-lastBack<2000){save();try{BACKAPP.exitApp()}catch(e){}}
+ else{lastBack=now;toast('Press back again to exit')}}
+function initBack(){try{const C=window.Capacitor;
+ if(!C||!C.registerPlugin||!(C.PluginHeaders||[]).some(h=>h.name==='App'))return;
+ BACKAPP=C.registerPlugin('App');BACKAPP.addListener('backButton',backAction)}catch(e){}}
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape'){closeStats();closeNew();closeSet()}
  if(/^(TEXTAREA|INPUT)$/.test((e.target&&e.target.tagName)||''))return;
@@ -374,5 +477,5 @@ function migrate(){try{if(localStorage.getItem('sudoku-v2'))return;
  const st=stats();if(st.Hard){st.Expert=st.Hard;delete st.Hard;localStorage.setItem('sudoku-stats',JSON.stringify(st))}
  const sv=JSON.parse(localStorage.getItem('sudoku-save'));if(sv&&sv.lv==='Hard'){sv.lv='Expert';localStorage.setItem('sudoku-save',JSON.stringify(sv))}
  localStorage.setItem('sudoku-v2','1')}catch(e){}}
-migrate();build();if(load()){G.paused=false;G.hints=G.hints||0}if(G.puz.length)draw();else start('Easy');
+migrate();loadS();build();if(load()){G.paused=false;G.hints=G.hints||0}if(G.puz.length)draw();else start(G.lv);initBack();
 </script></body></html>
